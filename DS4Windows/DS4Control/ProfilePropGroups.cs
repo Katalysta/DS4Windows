@@ -40,6 +40,8 @@ namespace DS4Windows
         }
 
         public const int DEFAULT_DEADZONE = 10;
+        public const int DEFAULT_CARDINALSNAPWIDTH = 0;
+        public const int DEFAULT_CARDINALSNAPSTART = 0;
         public const int DEFAULT_ANTIDEADZONE = 20;
         public const int DEFAULT_MAXZONE = 100;
         public const double DEFAULT_MAXOUTPUT = 100.0;
@@ -47,6 +49,8 @@ namespace DS4Windows
         public const int DEFAULT_FUZZ = 0;
         public const DeadZoneType DEFAULT_DEADZONE_TYPE = DeadZoneType.Radial;
         public const double DEFAULT_VERTICAL_SCALE = 100.0;
+        public const int DEFAULT_JUMPLOCK = 0;
+        public const bool DEFAULT_LOCKSWAP = false;
         public const double DEFAULT_OUTER_BIND_DEAD = 75.0;
         public const bool DEFAULT_OUTER_BIND_INVERT = false;
 
@@ -55,6 +59,8 @@ namespace DS4Windows
             // DeadZone value from 0-127 (old bad convention)
             public int deadZone = DEFAULT_DEADZONE;
             public int antiDeadZone = DEFAULT_ANTIDEADZONE;
+            public int CardinalSnapWidth = DEFAULT_CARDINALSNAPWIDTH;
+            public int CardinalSnapStart = DEFAULT_CARDINALSNAPSTART;
             public int maxZone = DEFAULT_MAXZONE;
             public double maxOutput = DEFAULT_MAXOUTPUT;
 
@@ -62,6 +68,8 @@ namespace DS4Windows
             {
                 deadZone = DEFAULT_DEADZONE;
                 antiDeadZone = DEFAULT_ANTIDEADZONE;
+                CardinalSnapWidth = DEFAULT_CARDINALSNAPWIDTH;
+                CardinalSnapStart = DEFAULT_CARDINALSNAPSTART;
                 maxZone = DEFAULT_MAXZONE;
                 maxOutput = DEFAULT_MAXOUTPUT;
             }
@@ -69,12 +77,16 @@ namespace DS4Windows
 
         // DeadZone value from 0-127 (old bad convention)
         public int deadZone;
+        public int CardinalSnapWidth;
+        public int CardinalSnapStart;
         public int antiDeadZone;
         public int maxZone = DEFAULT_MAXZONE;
         public double maxOutput = DEFAULT_MAXOUTPUT;
         public bool maxOutputForce = DEFAULT_MAXOUTPUT_FORCE;
         public int fuzz = DEFAULT_FUZZ;
         public double verticalScale = DEFAULT_VERTICAL_SCALE;
+        public int jumpLock = DEFAULT_JUMPLOCK;
+        public bool lockSwap = DEFAULT_LOCKSWAP;
         public DeadZoneType deadzoneType = DEFAULT_DEADZONE_TYPE;
         public double outerBindDeadZone = DEFAULT_OUTER_BIND_DEAD;
         public bool outerBindInvert = DEFAULT_OUTER_BIND_INVERT;
@@ -84,6 +96,8 @@ namespace DS4Windows
         public void Reset()
         {
             deadZone = 0;
+            CardinalSnapWidth = 0;
+            CardinalSnapStart = 0;
             antiDeadZone = 0;
             maxZone = DEFAULT_MAXZONE;
             maxOutput = DEFAULT_MAXOUTPUT;
@@ -91,6 +105,8 @@ namespace DS4Windows
 
             fuzz = DEFAULT_FUZZ;
             verticalScale = DEFAULT_VERTICAL_SCALE;
+            jumpLock = DEFAULT_JUMPLOCK;
+            lockSwap = DEFAULT_LOCKSWAP;
             deadzoneType = DEFAULT_DEADZONE_TYPE;
             outerBindDeadZone = DEFAULT_OUTER_BIND_DEAD;
             outerBindInvert = DEFAULT_OUTER_BIND_INVERT;
@@ -126,6 +142,34 @@ namespace DS4Windows
             }
         }
         public event EventHandler DeadZoneChanged;
+
+        public byte cardinalSnapWidth;
+
+        public byte CardinalSnapWidth
+        {
+            get => CardinalSnapWidth;
+            set
+            {
+                if (CardinalSnapWidth == value) return;
+                CardinalSnapWidth = value;
+                CardinalSnapWidthChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        public event EventHandler CardinalSnapWidthChanged;
+
+        public byte cardinalSnapStart;
+
+        public byte CardinalSnapStart
+        {
+            get => CardinalSnapStart;
+            set
+            {
+                if (CardinalSnapStart == value) return;
+                CardinalSnapStart = value;
+                CardinalSnapStartChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        public event EventHandler CardinalSnapStartChanged;
 
         public int antiDeadZone;
         public int maxZone = 100;

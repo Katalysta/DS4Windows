@@ -1144,16 +1144,21 @@ namespace DS4Windows
             if (lsMod.deadzoneType == StickDeadZoneInfo.DeadZoneType.Radial)
             {
                 int lsDeadzone = lsMod.deadZone;
+                double lsCardinalSnapWidth = (double)lsMod.CardinalSnapWidth;
+                double lsCardinalSnapStart = (double)lsMod.CardinalSnapStart;
                 int lsAntiDead = lsMod.antiDeadZone;
                 int lsMaxZone = lsMod.maxZone;
                 double lsMaxOutput = lsMod.maxOutput;
                 double lsVerticalScale = lsMod.verticalScale;
-                bool interpret = lsAntiDead > 0 || lsMaxZone != 100 || lsMaxOutput != 100.0 || lsMod.maxOutputForce || lsVerticalScale != StickDeadZoneInfo.DEFAULT_VERTICAL_SCALE;
+
+                bool interpret = lsAntiDead > 0 || lsMaxZone != 100 || lsMaxOutput != 100.0 || lsMod.maxOutputForce || lsVerticalScale != StickDeadZoneInfo.DEFAULT_VERTICAL_SCALE || lsCardinalSnapWidth > 0;
 
                 if (lsDeadzone > 0 || interpret)
                 {
                     double lsSquared = Math.Pow(cState.LX - 128f, 2) + Math.Pow(cState.LY - 128f, 2);
                     double lsDeadzoneSquared = Math.Pow(lsDeadzone, 2);
+
+
                     if (lsDeadzone > 0 && lsSquared <= lsDeadzoneSquared)
                     {
                         dState.LX = 128;
@@ -1176,26 +1181,68 @@ namespace DS4Windows
                         double maxZoneY = dState.LY >= 128.0 ? (maxZoneYPosValue - 128.0) : (maxZoneYNegValue - 128.0);
 
                         double tempLsXDead = 0.0, tempLsYDead = 0.0;
+                        double tempLsXCardinalSnap = 0.0, tempLsYCardinalSnap = 0.0;
                         double tempOutputX = 0.0, tempOutputY = 0.0;
-                        if (lsDeadzone > 0)
-                        {
-                            tempLsXDead = Math.Abs(Math.Cos(r)) * (lsDeadzone / 127.0) * maxXValue;
-                            tempLsYDead = Math.Abs(Math.Sin(r)) * (lsDeadzone / 127.0) * maxYValue;
 
-                            if (lsSquared > lsDeadzoneSquared)
-                            {
-                                double currentX = Global.Clamp(maxZoneXNegValue, dState.LX, maxZoneXPosValue);
-                                double currentY = Global.Clamp(maxZoneYNegValue, dState.LY, maxZoneYPosValue);
-                                tempOutputX = ((currentX - 128.0 - tempLsXDead) / (maxZoneX - tempLsXDead));
-                                tempOutputY = ((currentY - 128.0 - tempLsYDead) / (maxZoneY - tempLsYDead));
-                            }
-                        }
-                        else
+                        if (lsDeadzone > 0 || lsCardinalSnapWidth > 0 || interpret)
                         {
                             double currentX = Global.Clamp(maxZoneXNegValue, dState.LX, maxZoneXPosValue);
                             double currentY = Global.Clamp(maxZoneYNegValue, dState.LY, maxZoneYPosValue);
-                            tempOutputX = (currentX - 128.0) / maxZoneX;
-                            tempOutputY = (currentY - 128.0) / maxZoneY;
+
+                            if (lsDeadzone > 0)
+                            {
+                                tempLsXDead = Math.Abs(Math.Cos(r)) * (lsDeadzone / 127.0) * maxXValue;
+                                tempLsYDead = Math.Abs(Math.Sin(r)) * (lsDeadzone / 127.0) * maxYValue;
+                            }
+
+                            tempOutputX = (currentX - 128.0 - tempLsXDead) / (maxZoneX - tempLsXDead);
+                            tempOutputY = (currentY - 128.0 - tempLsYDead) / (maxZoneY - tempLsYDead);
+
+                            if (lsCardinalSnapWidth > 0)
+                            {
+                                double XdistVal = (double)Math.Abs(dState.LX - 128);
+                                double YdistVal = (double)Math.Abs(dState.LY - 128);
+
+                                double lsCardinalSnapAngle = Math.Atan( (lsCardinalSnapWidth) / (127.0 - lsCardinalSnapStart));
+
+                                double tempMod = 0.0;
+
+                                if (YdistVal > lsCardinalSnapStart && XdistVal > 0)
+                                {
+                                    double lsCroppedXAngle = Math.Atan(XdistVal / (YdistVal - lsCardinalSnapStart));
+
+                                    if (lsCroppedXAngle < lsCardinalSnapAngle)
+                                    {
+                                        dState.LX = 128;
+                                        currentX = 0.0;
+                                        tempOutputX = 0.0;
+                                    }
+                                    else
+                                    {
+                                        tempLsXCardinalSnap = ((Math.Tan(lsCardinalSnapAngle) * (YdistVal - lsCardinalSnapStart)) / 127.0) * maxXValue;
+                                        tempMod = Math.Abs(tempLsXCardinalSnap) > Math.Abs(tempLsXDead) ? tempLsXCardinalSnap : tempLsXDead;
+                                        tempOutputX = (currentX - 128.0 - tempMod) / (maxZoneX - tempMod); 
+                                    }
+                                }
+                                if (XdistVal > lsCardinalSnapStart && YdistVal > 0)
+                                {
+                                    double lsCroppedYAngle = Math.Atan(YdistVal / (XdistVal - lsCardinalSnapStart) );
+
+                                    if (lsCroppedYAngle < lsCardinalSnapAngle)
+                                    {
+                                        dState.LY = 128;
+                                        currentY = 0.0;
+                                        tempOutputY = 0.0;
+                                    }
+                                    else
+                                    {
+                                        tempLsYCardinalSnap = ((Math.Tan(lsCardinalSnapAngle) * (XdistVal - lsCardinalSnapStart)) / 127.0) * maxYValue;
+                                        tempMod = Math.Abs(tempLsYCardinalSnap) > Math.Abs(tempLsYDead) ? tempLsYCardinalSnap : tempLsYDead;
+                                        tempOutputY = (currentY - 128.0 - tempMod) / (maxZoneY - tempMod);
+                                    }
+
+                                }
+                            }
                         }
 
                         if (lsVerticalScale != StickDeadZoneInfo.DEFAULT_VERTICAL_SCALE)
@@ -1377,11 +1424,14 @@ namespace DS4Windows
             if (rsMod.deadzoneType == StickDeadZoneInfo.DeadZoneType.Radial)
             {
                 int rsDeadzone = rsMod.deadZone;
+                double rsCardinalSnapWidth = (double)lsMod.CardinalSnapWidth;
+                double rsCardinalSnapStart = (double)lsMod.CardinalSnapStart;
                 int rsAntiDead = rsMod.antiDeadZone;
                 int rsMaxZone = rsMod.maxZone;
                 double rsMaxOutput = rsMod.maxOutput;
                 double rsVerticalScale = rsMod.verticalScale;
-                bool interpret = rsAntiDead > 0 || rsMaxZone != 100 || rsMaxOutput != 100.0 || rsMod.maxOutputForce || rsVerticalScale != StickDeadZoneInfo.DEFAULT_VERTICAL_SCALE;
+
+                bool interpret = rsAntiDead > 0 || rsMaxZone != 100 || rsMaxOutput != 100.0 || rsMod.maxOutputForce || rsVerticalScale != StickDeadZoneInfo.DEFAULT_VERTICAL_SCALE || rsCardinalSnapWidth > 0;
 
                 if (rsDeadzone > 0 || interpret)
                 {
@@ -1409,28 +1459,66 @@ namespace DS4Windows
                         double maxZoneY = dState.RY >= 128.0 ? (maxZoneYPosValue - 128.0) : (maxZoneYNegValue - 128.0);
 
                         double tempRsXDead = 0.0, tempRsYDead = 0.0;
+                        double tempRsXCardinalSnap = 0.0, tempRsYCardinalSnap = 0.0;
                         double tempOutputX = 0.0, tempOutputY = 0.0;
-                        if (rsDeadzone > 0)
-                        {
-                            tempRsXDead = Math.Abs(Math.Cos(r)) * (rsDeadzone / 127.0) * maxXValue;
-                            tempRsYDead = Math.Abs(Math.Sin(r)) * (rsDeadzone / 127.0) * maxYValue;
-
-                            if (rsSquared > rsDeadzoneSquared)
-                            {
-                                double currentX = Global.Clamp(maxZoneXNegValue, dState.RX, maxZoneXPosValue);
-                                double currentY = Global.Clamp(maxZoneYNegValue, dState.RY, maxZoneYPosValue);
-
-                                tempOutputX = ((currentX - 128.0 - tempRsXDead) / (maxZoneX - tempRsXDead));
-                                tempOutputY = ((currentY - 128.0 - tempRsYDead) / (maxZoneY - tempRsYDead));
-                            }
-                        }
-                        else
+                        if (rsDeadzone > 0 || rsCardinalSnapWidth > 0 || interpret)
                         {
                             double currentX = Global.Clamp(maxZoneXNegValue, dState.RX, maxZoneXPosValue);
                             double currentY = Global.Clamp(maxZoneYNegValue, dState.RY, maxZoneYPosValue);
 
-                            tempOutputX = (currentX - 128.0) / maxZoneX;
-                            tempOutputY = (currentY - 128.0) / maxZoneY;
+                            if (rsDeadzone > 0)
+                            {
+                                tempRsXDead = Math.Abs(Math.Cos(r)) * (rsDeadzone / 127.0) * maxXValue;
+                                tempRsYDead = Math.Abs(Math.Sin(r)) * (rsDeadzone / 127.0) * maxYValue;
+                            }
+
+                            tempOutputX = (currentX - 128.0 - tempRsXDead) / (maxZoneX - tempRsXDead);
+                            tempOutputY = (currentY - 128.0 - tempRsYDead) / (maxZoneY - tempRsYDead);
+
+                            if (rsCardinalSnapWidth > 0)
+                            {
+                                double XdistVal = (double)Math.Abs(dState.RX - 128);
+                                double YdistVal = (double)Math.Abs(dState.RY - 128);
+
+                                double rsCardinalSnapAngle = Math.Atan((rsCardinalSnapWidth) / (127.0 - rsCardinalSnapStart));
+
+                                double tempMod = 0.0;
+
+                                if (YdistVal > rsCardinalSnapStart && XdistVal > 0)
+                                {
+                                    double rsCroppedXAngle = Math.Atan(XdistVal / (YdistVal - rsCardinalSnapStart));
+
+                                    if (rsCroppedXAngle < rsCardinalSnapAngle)
+                                    {
+                                        dState.RX = 128;
+                                        currentX = 0.0;
+                                        tempOutputX = 0.0;
+                                    }
+                                    else
+                                    {
+                                        tempRsXCardinalSnap = ((Math.Tan(rsCardinalSnapAngle) * (YdistVal - rsCardinalSnapStart)) / 127.0) * maxXValue;
+                                        tempMod = Math.Abs(tempRsXCardinalSnap) > Math.Abs(tempRsXDead) ? tempRsXCardinalSnap : tempRsXDead;
+                                        tempOutputX = (currentX - 128.0 - tempMod) / (maxZoneX - tempMod);
+                                    }
+                                }
+                                if (XdistVal > rsCardinalSnapStart && YdistVal > 0)
+                                {
+                                    double rsCroppedYAngle = Math.Atan(YdistVal / (XdistVal - rsCardinalSnapStart));
+
+                                    if (rsCroppedYAngle < rsCardinalSnapAngle)
+                                    {
+                                        dState.RY = 128;
+                                        currentY = 0.0;
+                                        tempOutputY = 0.0;
+                                    }
+                                    else
+                                    {
+                                        tempRsYCardinalSnap = ((Math.Tan(rsCardinalSnapAngle) * (XdistVal - rsCardinalSnapStart)) / 127.0) * maxYValue;
+                                        tempMod = Math.Abs(tempRsYCardinalSnap) > Math.Abs(tempRsYDead) ? tempRsYCardinalSnap : tempRsYDead;
+                                        tempOutputY = (currentY - 128.0 - tempMod) / (maxZoneY - tempMod);
+                                    }
+                                }
+                            }
                         }
 
                         if (rsVerticalScale != StickDeadZoneInfo.DEFAULT_VERTICAL_SCALE)
@@ -2288,6 +2376,90 @@ namespace DS4Windows
                     }
                 }
             }
+             
+            
+            // Add Right Analog Vertical Output to Left Analog Stick
+            /*
+            if (dState.LY > 24 && dState.LY < 231)
+            {
+              dState.LY = (byte)(Global.Clamp(0.0, dState.LY + dState.RY - 128.0, 255.0));
+            }
+            */  
+            
+
+            //if (Math.Abs(dState.RY - 128) > Math.Abs(dState.LY - 128) && dState.LY > 16 && dState.LY < 239)
+            //{
+            //  dState.LY = dState.RY;
+            //}
+
+            bool LSjustJumped = false;
+            bool RSjustJumped = false;
+
+            long lNow = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+            if (lsMod.jumpLock > 0 || rsMod.jumpLock > 0)
+            {
+                if (dState.R1) //Cross,R1
+                {
+                    if (dState.JumpFirstPressed == 0)
+                    {
+                        dState.JumpFirstPressed = lNow;
+                    }
+                }
+
+                if (dState.JumpFirstPressed != 0)
+                {
+                    if (dState.JumpFirstPressed > lNow - lsMod.jumpLock)
+                    {
+                        LSjustJumped = true;
+                    }
+                    if (dState.JumpFirstPressed > lNow - rsMod.jumpLock)
+                    {
+                        RSjustJumped = true;
+                    }
+                    if (!LSjustJumped && !RSjustJumped && !dState.R1) //Cross,R1
+                    {
+                        dState.JumpFirstPressed = 0;
+                    }
+                }
+            }
+
+            if (LSjustJumped || RSjustJumped)
+            {
+                byte tempLX = dState.LX;
+                byte tempLY = dState.LY;
+                byte tempRX = dState.RX;
+                byte tempRY = dState.RY;
+
+                if (LSjustJumped)
+                {
+                    if (lsMod.lockSwap)
+                    {
+                        dState.LX = tempRX;
+                        dState.LY = tempRY;
+                    }
+                    else
+                    {
+                        dState.LX = 128;
+                        dState.LY = 128;
+                    }
+                }
+                if (RSjustJumped)
+                {
+                    if (rsMod.lockSwap)
+                    {
+                        dState.RX = tempLX;
+                        dState.RY = tempLY;
+                    }
+                    else
+                    {
+                        dState.RX = 128;
+                        dState.RY = 128;
+                    }
+                }
+            }
+
+
 
             return dState;
         }

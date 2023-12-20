@@ -22,6 +22,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -976,6 +977,34 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         }
         public event EventHandler RSDeadZoneChanged;
 
+        public double LSCardinalSnapWidth
+        {
+            get => Math.Round(Global.LSModInfo[device].CardinalSnapWidth / 127d, 2);
+            set
+            {
+                double temp = Math.Round(Global.LSModInfo[device].CardinalSnapWidth / 127d, 2);
+                if (temp == value) return;
+                Global.LSModInfo[device].CardinalSnapWidth = (int)Math.Round(value * 127d);
+                LSCardinalSnapWidthChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler LSCardinalSnapWidthChanged;
+
+        public double LSCardinalSnapStart
+        {
+            get => Math.Round(Global.LSModInfo[device].CardinalSnapStart / 127d, 2);
+            set
+            {
+                double temp = Math.Round(Global.LSModInfo[device].CardinalSnapStart / 127d, 2);
+                if (temp == value) return;
+                Global.LSModInfo[device].CardinalSnapStart = (int)Math.Round(value * 127d);
+                LSCardinalSnapStartChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler LSCardinalSnapStartChanged;
+
         public double LSMaxZone
         {
             get => Global.LSModInfo[device].maxZone / 100.0;
@@ -1006,6 +1035,17 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             set => Global.LSModInfo[device].verticalScale = value * 100.0;
         }
 
+        public int LSJumpLock
+        {
+            get => Global.LSModInfo[device].jumpLock;
+            set => Global.LSModInfo[device].jumpLock = value;
+        }
+        public bool LSLockSwap
+        {
+            get => Global.LSModInfo[device].lockSwap;
+            set => Global.LSModInfo[device].lockSwap = value;
+        }
+
         public double LSMaxOutput
         {
             get => Global.LSModInfo[device].maxOutput / 100.0;
@@ -1022,6 +1062,18 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         {
             get => Global.RSModInfo[device].verticalScale / 100.0;
             set => Global.RSModInfo[device].verticalScale = value * 100.0;
+        }
+
+        public int RSJumpLock
+        {
+            get => Global.RSModInfo[device].jumpLock;
+            set => Global.RSModInfo[device].jumpLock = value;
+        }
+
+        public bool RSLockSwap
+        {
+            get => Global.RSModInfo[device].lockSwap;
+            set => Global.RSModInfo[device].lockSwap = value;
         }
 
         public double RSMaxOutput

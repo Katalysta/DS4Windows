@@ -422,6 +422,22 @@ namespace DS4WinWPF.DS4Control.DTOXml
             set => _rSDeadZone = Math.Clamp(value, 0, 127);
         }
 
+        private int _CardinalSnapWidth = 0;
+        [XmlElement("CardinalSnapWidth")]
+        public int CardinalSnapWidth
+        {
+            get => _CardinalSnapWidth;
+            set => _CardinalSnapWidth = Math.Clamp(value, 0, 127);
+        }
+
+        private int _CardinalSnapStart = 0;
+        [XmlElement("CardinalSnapStart")]
+        public int CardinalSnapStart
+        {
+            get => _CardinalSnapStart;
+            set => _CardinalSnapStart = Math.Clamp(value, 0, 127);
+        }
+
         private int _lSAntiDeadZone = 20;
         [XmlElement("LSAntiDeadZone")]
         public int LSAntiDeadZone
@@ -468,6 +484,38 @@ namespace DS4WinWPF.DS4Control.DTOXml
         {
             get => _rSVerticalScale;
             set => _rSVerticalScale = Math.Clamp(value, 0.0, 400.0);
+        }
+
+        private int _lSJumpLock = StickDeadZoneInfo.DEFAULT_JUMPLOCK;
+        [XmlElement("LSJumpLock")]
+        public int LSJumpLock
+        {
+            get => _lSJumpLock;
+            set => _lSJumpLock = Math.Clamp(value, 0, 100);
+        }
+
+        private int _rSJumpLock = StickDeadZoneInfo.DEFAULT_JUMPLOCK;
+        [XmlElement("RSJumpLock")]
+        public int RSJumpLock
+        {
+            get => _rSJumpLock;
+            set => _rSJumpLock = Math.Clamp(value, 0, 100);
+        }
+
+        private bool _lSLockSwap = StickDeadZoneInfo.DEFAULT_LOCKSWAP;
+        [XmlElement("LSLockSwap")]
+        public string LSLockSwapString
+        {
+            get => _lSLockSwap.ToString();
+            set => _lSLockSwap = XmlDataUtilities.StrToBool(value);
+        }
+
+        private bool _rSLockSwap = StickDeadZoneInfo.DEFAULT_LOCKSWAP;
+        [XmlElement("RSLockSwap")]
+        public string RSLockSwapString
+        {
+            get => _rSLockSwap.ToString();
+            set => _rSLockSwap = XmlDataUtilities.StrToBool(value);
         }
 
         private double _lSMaxOutput = 100.0;
@@ -1471,15 +1519,21 @@ namespace DS4WinWPF.DS4Control.DTOXml
             _maxSatRainbow = lightInfo.maxRainbowSat;
             LSDeadZone = source.lsModInfo[deviceIndex].deadZone;
             RSDeadZone = source.rsModInfo[deviceIndex].deadZone;
+            CardinalSnapWidth = source.lsModInfo[deviceIndex].CardinalSnapWidth;
+            CardinalSnapStart = source.lsModInfo[deviceIndex].CardinalSnapStart;
             LSAntiDeadZone = source.lsModInfo[deviceIndex].antiDeadZone;
             RSAntiDeadZone = source.rsModInfo[deviceIndex].antiDeadZone;
             LSMaxZone = source.lsModInfo[deviceIndex].maxZone;
             RSMaxZone = source.rsModInfo[deviceIndex].maxZone;
             LSVerticalScale = source.lsModInfo[deviceIndex].verticalScale;
+            LSJumpLock = source.lsModInfo[deviceIndex].jumpLock;
+            _lSLockSwap = source.lsModInfo[deviceIndex].lockSwap;
             LSMaxOutput = source.lsModInfo[deviceIndex].maxOutput;
             _lsMaxOutputForce = source.lsModInfo[deviceIndex].maxOutputForce;
 
             RSVerticalScale = source.rsModInfo[deviceIndex].verticalScale;
+            RSJumpLock = source.rsModInfo[deviceIndex].jumpLock;
+            _rSLockSwap = source.rsModInfo[deviceIndex].lockSwap;
             RSMaxOutput = source.rsModInfo[deviceIndex].maxOutput;
             _rsMaxOutputForce = source.rsModInfo[deviceIndex].maxOutputForce;
 
@@ -1972,15 +2026,21 @@ namespace DS4WinWPF.DS4Control.DTOXml
             lightInfo.maxRainbowSat = _maxSatRainbow;
             destination.lsModInfo[deviceIndex].deadZone = LSDeadZone;
             destination.rsModInfo[deviceIndex].deadZone = RSDeadZone;
+            destination.lsModInfo[deviceIndex].CardinalSnapWidth = CardinalSnapWidth;
+            destination.lsModInfo[deviceIndex].CardinalSnapStart = CardinalSnapStart;
             destination.lsModInfo[deviceIndex].antiDeadZone = LSAntiDeadZone;
             destination.rsModInfo[deviceIndex].antiDeadZone = RSAntiDeadZone;
             destination.lsModInfo[deviceIndex].maxZone = LSMaxZone;
             destination.rsModInfo[deviceIndex].maxZone = RSMaxZone;
             destination.lsModInfo[deviceIndex].verticalScale = LSVerticalScale;
+            destination.lsModInfo[deviceIndex].jumpLock = LSJumpLock;
+            destination.lsModInfo[deviceIndex].lockSwap = _lSLockSwap;
             destination.lsModInfo[deviceIndex].maxOutput = LSMaxOutput;
             destination.lsModInfo[deviceIndex].maxOutputForce = _lsMaxOutputForce;
 
             destination.rsModInfo[deviceIndex].verticalScale = RSVerticalScale;
+            destination.rsModInfo[deviceIndex].jumpLock = RSJumpLock;
+            destination.rsModInfo[deviceIndex].lockSwap = _rSLockSwap;
             destination.rsModInfo[deviceIndex].maxOutput = RSMaxOutput;
             destination.rsModInfo[deviceIndex].maxOutputForce = _rsMaxOutputForce;
 

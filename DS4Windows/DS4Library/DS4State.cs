@@ -25,6 +25,7 @@ namespace DS4Windows
         public uint PacketCounter;
         public DateTime ReportTimeStamp;
         public bool Square, Triangle, Circle, Cross;
+        public long JumpFirstPressed;
         public bool DpadUp, DpadDown, DpadLeft, DpadRight;
         public bool L1, L2Btn, L3, R1, R2Btn, R3;
         public bool Share, Options, PS, Mute, Touch1, Touch2, TouchButton, TouchRight,
@@ -68,6 +69,7 @@ namespace DS4Windows
         {
             PacketCounter = 0;
             Square = Triangle = Circle = Cross = false;
+            JumpFirstPressed = 0;
             DpadUp = DpadDown = DpadLeft = DpadRight = false;
             L1 = L2Btn = L3 = R1 = R2Btn = R3 = false;
             Share = Options = PS = Mute = Touch1 = Touch2 = TouchButton =
@@ -107,6 +109,7 @@ namespace DS4Windows
             Triangle = state.Triangle;
             Circle = state.Circle;
             Cross = state.Cross;
+            JumpFirstPressed = state.JumpFirstPressed;
             DpadUp = state.DpadUp;
             DpadDown = state.DpadDown;
             DpadLeft = state.DpadLeft;

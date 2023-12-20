@@ -2283,6 +2283,34 @@ namespace DS4Windows
             return m_Config.SZAntiDeadzone[index];
         }
 
+        public static int getLSCardinalSnapWidth(int index)
+        {
+            return m_Config.lsModInfo[index].CardinalSnapWidth;
+        }
+
+        public static int getLSCardinalSnapStart(int index)
+        {
+            return m_Config.lsModInfo[index].CardinalSnapStart;
+        }
+        public static int getLSJumpLock(int index)
+        {
+            return m_Config.lsModInfo[index].jumpLock;
+        }
+
+        public static bool getLSLockSwap(int index)
+        {
+            return m_Config.lsModInfo[index].lockSwap;
+        }
+
+        public static int getRSJumpLock(int index)
+        {
+            return m_Config.rsModInfo[index].jumpLock;
+        }
+        public static bool getRSLockSwap(int index)
+        {
+            return m_Config.rsModInfo[index].lockSwap;
+        }
+
         //public static int[] LSMaxzone => m_Config.LSMaxzone;
         public static int getLSMaxzone(int index)
         {
@@ -4142,10 +4170,16 @@ namespace DS4Windows
                 XmlNode xmlRSD = m_Xdoc.CreateNode(XmlNodeType.Element, "RSDeadZone", null); xmlRSD.InnerText = rsModInfo[device].deadZone.ToString(); rootElement.AppendChild(xmlRSD);
                 XmlNode xmlLSAD = m_Xdoc.CreateNode(XmlNodeType.Element, "LSAntiDeadZone", null); xmlLSAD.InnerText = lsModInfo[device].antiDeadZone.ToString(); rootElement.AppendChild(xmlLSAD);
                 XmlNode xmlRSAD = m_Xdoc.CreateNode(XmlNodeType.Element, "RSAntiDeadZone", null); xmlRSAD.InnerText = rsModInfo[device].antiDeadZone.ToString(); rootElement.AppendChild(xmlRSAD);
+                XmlNode xmlLSCardinalSnapWidth = m_Xdoc.CreateNode(XmlNodeType.Element, "LSCardinalSnapWidth", null); xmlLSCardinalSnapWidth.InnerText = lsModInfo[device].CardinalSnapWidth.ToString(); rootElement.AppendChild(xmlLSCardinalSnapWidth);
+                XmlNode xmlLSCardinalSnapStart = m_Xdoc.CreateNode(XmlNodeType.Element, "LSCardinalSnapStart", null); xmlLSCardinalSnapStart.InnerText = lsModInfo[device].CardinalSnapStart.ToString(); rootElement.AppendChild(xmlLSCardinalSnapStart);
                 XmlNode xmlLSMaxZone = m_Xdoc.CreateNode(XmlNodeType.Element, "LSMaxZone", null); xmlLSMaxZone.InnerText = lsModInfo[device].maxZone.ToString(); rootElement.AppendChild(xmlLSMaxZone);
                 XmlNode xmlRSMaxZone = m_Xdoc.CreateNode(XmlNodeType.Element, "RSMaxZone", null); xmlRSMaxZone.InnerText = rsModInfo[device].maxZone.ToString(); rootElement.AppendChild(xmlRSMaxZone);
                 XmlNode xmlLSVerticalScale = m_Xdoc.CreateNode(XmlNodeType.Element, "LSVerticalScale", null); xmlLSVerticalScale.InnerText = lsModInfo[device].verticalScale.ToString(); rootElement.AppendChild(xmlLSVerticalScale);
                 XmlNode xmlRSVerticalScale = m_Xdoc.CreateNode(XmlNodeType.Element, "RSVerticalScale", null); xmlRSVerticalScale.InnerText = rsModInfo[device].verticalScale.ToString(); rootElement.AppendChild(xmlRSVerticalScale);
+                XmlNode xmlLSJumpLock = m_Xdoc.CreateNode(XmlNodeType.Element, "LSJumpLock", null); xmlLSJumpLock.InnerText = lsModInfo[device].jumpLock.ToString(); rootElement.AppendChild(xmlLSJumpLock);
+                XmlNode xmlRSJumpLock = m_Xdoc.CreateNode(XmlNodeType.Element, "RSJumpLock", null); xmlRSJumpLock.InnerText = rsModInfo[device].jumpLock.ToString(); rootElement.AppendChild(xmlRSJumpLock);
+                XmlNode xmlLSLockSwap = m_Xdoc.CreateNode(XmlNodeType.Element, "LSLockSwap", null); xmlLSLockSwap.InnerText = lsModInfo[device].lockSwap.ToString(); rootElement.AppendChild(xmlLSLockSwap);
+                XmlNode xmlRSLockSwap = m_Xdoc.CreateNode(XmlNodeType.Element, "RSLockSwap", null); xmlRSLockSwap.InnerText = rsModInfo[device].lockSwap.ToString(); rootElement.AppendChild(xmlRSLockSwap);
                 XmlNode xmlLSMaxOutput = m_Xdoc.CreateNode(XmlNodeType.Element, "LSMaxOutput", null); xmlLSMaxOutput.InnerText = lsModInfo[device].maxOutput.ToString(); rootElement.AppendChild(xmlLSMaxOutput);
                 XmlNode xmlRSMaxOutput = m_Xdoc.CreateNode(XmlNodeType.Element, "RSMaxOutput", null); xmlRSMaxOutput.InnerText = rsModInfo[device].maxOutput.ToString(); rootElement.AppendChild(xmlRSMaxOutput);
                 XmlNode xmlLSMaxOutputForce = m_Xdoc.CreateNode(XmlNodeType.Element, "LSMaxOutputForce", null); xmlLSMaxOutputForce.InnerText = lsModInfo[device].maxOutputForce.ToString(); rootElement.AppendChild(xmlLSMaxOutputForce);
@@ -5461,6 +5495,30 @@ namespace DS4Windows
                     rsModInfo[device].deadZone = 10; missingSetting = true;
                 }
 
+                try
+                {
+                    Item = m_Xdoc.SelectSingleNode("/" + rootname + "/LSCardinalSnapWidth");
+                    int.TryParse(Item.InnerText, out int temp);
+                    temp = Math.Min(Math.Max(temp, 0), 127);
+                    lsModInfo[device].CardinalSnapWidth = temp;
+                }
+                catch
+                {
+                    lsModInfo[device].CardinalSnapWidth = 0; missingSetting = true;
+                }
+
+                try
+                {
+                    Item = m_Xdoc.SelectSingleNode("/" + rootname + "/LSCardinalSnapStart");
+                    int.TryParse(Item.InnerText, out int temp);
+                    temp = Math.Min(Math.Max(temp, 0), 127);
+                    lsModInfo[device].CardinalSnapStart = temp;
+                }
+                catch
+                {
+                    lsModInfo[device].CardinalSnapStart = 0; missingSetting = true;
+                }
+
                 try { Item = m_Xdoc.SelectSingleNode("/" + rootname + "/LSAntiDeadZone"); int.TryParse(Item.InnerText, out lsModInfo[device].antiDeadZone); }
                 catch { lsModInfo[device].antiDeadZone = 20; missingSetting = true; }
                 try { Item = m_Xdoc.SelectSingleNode("/" + rootname + "/RSAntiDeadZone"); int.TryParse(Item.InnerText, out rsModInfo[device].antiDeadZone); }
@@ -5489,6 +5547,25 @@ namespace DS4Windows
                     }
                 }
                 catch { lsModInfo[device].verticalScale = StickDeadZoneInfo.DEFAULT_VERTICAL_SCALE; }
+
+                try
+                {
+                    Item = m_Xdoc.SelectSingleNode("/" + rootname + "/LSJumpLock");
+                    int.TryParse(Item.InnerText, out int temp);
+                    temp = Math.Min(Math.Max(temp, 0), 100);
+                    lsModInfo[device].jumpLock = Math.Min(Math.Max(temp, 0), 100);
+                }
+                catch { lsModInfo[device].jumpLock = 0; missingSetting = true; }
+
+                try
+                {
+                    Item = m_Xdoc.SelectSingleNode("/" + rootname + "/LSLockSwap");
+                    if (bool.TryParse(Item?.InnerText ?? "", out bool temp))
+                    {
+                        lsModInfo[device].lockSwap = temp;
+                    }
+                }
+                catch { lsModInfo[device].lockSwap = false; missingSetting = true; }
 
                 try
                 {
@@ -5577,6 +5654,25 @@ namespace DS4Windows
                     }
                 }
                 catch { rsModInfo[device].verticalScale = StickDeadZoneInfo.DEFAULT_VERTICAL_SCALE; }
+
+                try
+                {
+                    Item = m_Xdoc.SelectSingleNode("/" + rootname + "/RSJumpLock");
+                    int.TryParse(Item.InnerText, out int temp);
+                    temp = Math.Min(Math.Max(temp, 0), 100);
+                    rsModInfo[device].jumpLock = Math.Min(Math.Max(temp, 0), 100);
+                }
+                catch { rsModInfo[device].jumpLock = 0; missingSetting = true; }
+
+                try
+                {
+                    Item = m_Xdoc.SelectSingleNode("/" + rootname + "/RSLockSwap");
+                    if (bool.TryParse(Item?.InnerText ?? "", out bool temp))
+                    {
+                        rsModInfo[device].lockSwap = temp;
+                    }
+                }
+                catch { rsModInfo[device].lockSwap = false; missingSetting = true; }
 
                 try
                 {
