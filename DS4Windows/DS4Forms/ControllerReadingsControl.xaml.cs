@@ -60,17 +60,23 @@ namespace DS4WinWPF.DS4Forms
         private double lsCardinalSnapStart;
         private double rsDeadX;
         private double rsDeadY;
+        private double rsCardinalSnapWidth;
+        private double rsCardinalSnapStart;
 
         private double sixAxisXDead;
         private double sixAxisZDead;
         private double l2Dead;
         private double r2Dead;
 
-        private ObservableCollection<Point> Npoints = new ObservableCollection<Point>();
-        private ObservableCollection<Point> Spoints = new ObservableCollection<Point>();
-        private ObservableCollection<Point> Wpoints = new ObservableCollection<Point>();
-        private ObservableCollection<Point> Epoints = new ObservableCollection<Point>();
+        private ObservableCollection<Point> LSNpoints = new ObservableCollection<Point>();
+        private ObservableCollection<Point> LSSpoints = new ObservableCollection<Point>();
+        private ObservableCollection<Point> LSWpoints = new ObservableCollection<Point>();
+        private ObservableCollection<Point> LSEpoints = new ObservableCollection<Point>();
 
+        private ObservableCollection<Point> RSNpoints = new ObservableCollection<Point>();
+        private ObservableCollection<Point> RSSpoints = new ObservableCollection<Point>();
+        private ObservableCollection<Point> RSWpoints = new ObservableCollection<Point>();
+        private ObservableCollection<Point> RSEpoints = new ObservableCollection<Point>();
         public double LsDeadX
         {
             get => lsDeadX;
@@ -93,23 +99,39 @@ namespace DS4WinWPF.DS4Forms
         }
         public event EventHandler LsDeadYChanged;
 
-        public ObservableCollection<Point> NPoints
+        public ObservableCollection<Point> LSNPoints
         { 
-            get { return Npoints; } 
+            get { return LSNpoints; } 
         }
-        public ObservableCollection<Point> SPoints
+        public ObservableCollection<Point> LSSPoints
         {
-            get { return Spoints; }
+            get { return LSSpoints; }
         }
-        public ObservableCollection<Point> WPoints
+        public ObservableCollection<Point> LSWPoints
         {
-            get { return Wpoints; }
+            get { return LSWpoints; }
         }
-        public ObservableCollection<Point> EPoints
+        public ObservableCollection<Point> LSEPoints
         {
-            get { return Epoints; }
+            get { return LSEpoints; }
         }
 
+        public ObservableCollection<Point> RSNPoints
+        {
+            get { return RSNpoints; }
+        }
+        public ObservableCollection<Point> RSSPoints
+        {
+            get { return RSSpoints; }
+        }
+        public ObservableCollection<Point> RSWPoints
+        {
+            get { return RSWpoints; }
+        }
+        public ObservableCollection<Point> RSEPoints
+        {
+            get { return RSEpoints; }
+        }
         public double LsCardinalSnapWidth
         {
             get => lsCardinalSnapWidth;
@@ -133,6 +155,30 @@ namespace DS4WinWPF.DS4Forms
         }
 
         public event EventHandler LsCardinalSnapStartChanged;
+
+        public double RsCardinalSnapWidth
+        {
+            get => rsCardinalSnapWidth;
+            set
+            {
+                rsCardinalSnapWidth = value;
+                RsCardinalSnapWidthChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler RsCardinalSnapWidthChanged;
+
+        public double RsCardinalSnapStart
+        {
+            get => rsCardinalSnapStart;
+            set
+            {
+                rsCardinalSnapStart = value;
+                RsCardinalSnapStartChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler RsCardinalSnapStartChanged;
 
         public double RsDeadX
         {
@@ -227,6 +273,9 @@ namespace DS4WinWPF.DS4Forms
             RsDeadXChanged += ChangeRsDeadControls;
             RsDeadYChanged += ChangeRsDeadControls;
 
+            RsCardinalSnapWidthChanged += ChangeRsCardinalControls;
+            RsCardinalSnapStartChanged += ChangeRsCardinalControls;
+
             SixAxisDeadXChanged += ChangeSixAxisDeadControls;
             SixAxisDeadZChanged += ChangeSixAxisDeadControls;
             DeviceNumChanged += ControllerReadingsControl_DeviceNumChanged;
@@ -267,37 +316,78 @@ namespace DS4WinWPF.DS4Forms
             Point Point1 = new Point(CANVAS_MIDPOINT, CANVAS_MIDPOINT - (lsCardinalSnapStart * CANVAS_WIDTH / 2.0));
             Point Point2 = new Point(CANVAS_MIDPOINT - (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT - (CANVAS_WIDTH / 2.0));
             Point Point3 = new Point(CANVAS_MIDPOINT + (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT - (CANVAS_WIDTH / 2.0));
-            NPoints.Clear();
-            NPoints.Add(Point1);
-            NPoints.Add(Point2);
-            NPoints.Add(Point3);
+            LSNPoints.Clear();
+            LSNPoints.Add(Point1);
+            LSNPoints.Add(Point2);
+            LSNPoints.Add(Point3);
             DataContext = null;
             DataContext = this;
             Point1 = new Point(CANVAS_MIDPOINT, CANVAS_MIDPOINT + (lsCardinalSnapStart * CANVAS_WIDTH / 2.0));
             Point2 = new Point(CANVAS_MIDPOINT - (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT + (CANVAS_WIDTH / 2.0));
             Point3 = new Point(CANVAS_MIDPOINT + (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT + (CANVAS_WIDTH / 2.0));
-            SPoints.Clear();
-            SPoints.Add(Point1);
-            SPoints.Add(Point2);
-            SPoints.Add(Point3);
+            LSSPoints.Clear();
+            LSSPoints.Add(Point1);
+            LSSPoints.Add(Point2);
+            LSSPoints.Add(Point3);
             DataContext = null;
             DataContext = this;
             Point1 = new Point(CANVAS_MIDPOINT - (lsCardinalSnapStart * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT);
             Point2 = new Point(CANVAS_MIDPOINT - (CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT - (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0));
             Point3 = new Point(CANVAS_MIDPOINT - (CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT + (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0));
-            WPoints.Clear();
-            WPoints.Add(Point1);
-            WPoints.Add(Point2);
-            WPoints.Add(Point3);
+            LSWPoints.Clear();
+            LSWPoints.Add(Point1);
+            LSWPoints.Add(Point2);
+            LSWPoints.Add(Point3);
             DataContext = null;
             DataContext = this;
             Point1 = new Point(CANVAS_MIDPOINT + (lsCardinalSnapStart * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT);
             Point2 = new Point(CANVAS_MIDPOINT + (CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT - (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0));
             Point3 = new Point(CANVAS_MIDPOINT + (CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT + (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0));
-            EPoints.Clear();
-            EPoints.Add(Point1);
-            EPoints.Add(Point2);
-            EPoints.Add(Point3);
+            LSEPoints.Clear();
+            LSEPoints.Add(Point1);
+            LSEPoints.Add(Point2);
+            LSEPoints.Add(Point3);
+            DataContext = null;
+            DataContext = this;
+        }
+
+        private void ChangeRsCardinalControls(object sender, EventArgs e)
+        {
+            Random rnd = new Random();
+            Point Point1 = new Point(CANVAS_MIDPOINT, CANVAS_MIDPOINT - (rsCardinalSnapStart * CANVAS_WIDTH / 2.0));
+            Point Point2 = new Point(CANVAS_MIDPOINT - (rsCardinalSnapWidth * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT - (CANVAS_WIDTH / 2.0));
+            Point Point3 = new Point(CANVAS_MIDPOINT + (rsCardinalSnapWidth * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT - (CANVAS_WIDTH / 2.0));
+            RSNPoints.Clear();
+            RSNPoints.Add(Point1);
+            RSNPoints.Add(Point2);
+            RSNPoints.Add(Point3);
+            DataContext = null;
+            DataContext = this;
+            Point1 = new Point(CANVAS_MIDPOINT, CANVAS_MIDPOINT + (rsCardinalSnapStart * CANVAS_WIDTH / 2.0));
+            Point2 = new Point(CANVAS_MIDPOINT - (rsCardinalSnapWidth * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT + (CANVAS_WIDTH / 2.0));
+            Point3 = new Point(CANVAS_MIDPOINT + (rsCardinalSnapWidth * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT + (CANVAS_WIDTH / 2.0));
+            RSSPoints.Clear();
+            RSSPoints.Add(Point1);
+            RSSPoints.Add(Point2);
+            RSSPoints.Add(Point3);
+            DataContext = null;
+            DataContext = this;
+            Point1 = new Point(CANVAS_MIDPOINT - (rsCardinalSnapStart * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT);
+            Point2 = new Point(CANVAS_MIDPOINT - (CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT - (rsCardinalSnapWidth * CANVAS_WIDTH / 2.0));
+            Point3 = new Point(CANVAS_MIDPOINT - (CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT + (rsCardinalSnapWidth * CANVAS_WIDTH / 2.0));
+            RSWPoints.Clear();
+            RSWPoints.Add(Point1);
+            RSWPoints.Add(Point2);
+            RSWPoints.Add(Point3);
+            DataContext = null;
+            DataContext = this;
+            Point1 = new Point(CANVAS_MIDPOINT + (rsCardinalSnapStart * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT);
+            Point2 = new Point(CANVAS_MIDPOINT + (CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT - (rsCardinalSnapWidth * CANVAS_WIDTH / 2.0));
+            Point3 = new Point(CANVAS_MIDPOINT + (CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT + (rsCardinalSnapWidth * CANVAS_WIDTH / 2.0));
+            RSEPoints.Clear();
+            RSEPoints.Add(Point1);
+            RSEPoints.Add(Point2);
+            RSEPoints.Add(Point3);
             DataContext = null;
             DataContext = this;
         }

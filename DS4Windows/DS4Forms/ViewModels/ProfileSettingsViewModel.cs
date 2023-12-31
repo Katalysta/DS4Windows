@@ -991,6 +991,20 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 
         public event EventHandler LSCardinalSnapWidthChanged;
 
+        public double RSCardinalSnapWidth
+        {
+            get => Math.Round(Global.RSModInfo[device].CardinalSnapWidth / 127d, 2);
+            set
+            {
+                double temp = Math.Round(Global.RSModInfo[device].CardinalSnapWidth / 127d, 2);
+                if (temp == value) return;
+                Global.RSModInfo[device].CardinalSnapWidth = (int)Math.Round(value * 127d);
+                RSCardinalSnapWidthChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler RSCardinalSnapWidthChanged;
+
         public double LSCardinalSnapStart
         {
             get => Math.Round(Global.LSModInfo[device].CardinalSnapStart / 127d, 2);
@@ -1004,6 +1018,20 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         }
 
         public event EventHandler LSCardinalSnapStartChanged;
+
+        public double RSCardinalSnapStart
+        {
+            get => Math.Round(Global.RSModInfo[device].CardinalSnapStart / 127d, 2);
+            set
+            {
+                double temp = Math.Round(Global.RSModInfo[device].CardinalSnapStart / 127d, 2);
+                if (temp == value) return;
+                Global.RSModInfo[device].CardinalSnapStart = (int)Math.Round(value * 127d);
+                RSCardinalSnapStartChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler RSCardinalSnapStartChanged;
 
         public double LSMaxZone
         {

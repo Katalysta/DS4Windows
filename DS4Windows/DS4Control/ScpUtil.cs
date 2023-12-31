@@ -2288,9 +2288,19 @@ namespace DS4Windows
             return m_Config.lsModInfo[index].CardinalSnapWidth;
         }
 
+        public static int getRSCardinalSnapWidth(int index)
+        {
+            return m_Config.rsModInfo[index].CardinalSnapWidth;
+        }
+
         public static int getLSCardinalSnapStart(int index)
         {
             return m_Config.lsModInfo[index].CardinalSnapStart;
+        }
+
+        public static int getRSCardinalSnapStart(int index)
+        {
+            return m_Config.rsModInfo[index].CardinalSnapStart;
         }
         public static int getLSJumpLock(int index)
         {
@@ -4289,7 +4299,9 @@ namespace DS4Windows
                 XmlNode xmlLSAD = m_Xdoc.CreateNode(XmlNodeType.Element, "LSAntiDeadZone", null); xmlLSAD.InnerText = lsModInfo[device].antiDeadZone.ToString(); rootElement.AppendChild(xmlLSAD);
                 XmlNode xmlRSAD = m_Xdoc.CreateNode(XmlNodeType.Element, "RSAntiDeadZone", null); xmlRSAD.InnerText = rsModInfo[device].antiDeadZone.ToString(); rootElement.AppendChild(xmlRSAD);
                 XmlNode xmlLSCardinalSnapWidth = m_Xdoc.CreateNode(XmlNodeType.Element, "LSCardinalSnapWidth", null); xmlLSCardinalSnapWidth.InnerText = lsModInfo[device].CardinalSnapWidth.ToString(); rootElement.AppendChild(xmlLSCardinalSnapWidth);
+                XmlNode xmlRSCardinalSnapWidth = m_Xdoc.CreateNode(XmlNodeType.Element, "RSCardinalSnapWidth", null); xmlRSCardinalSnapWidth.InnerText = rsModInfo[device].CardinalSnapWidth.ToString(); rootElement.AppendChild(xmlRSCardinalSnapWidth);
                 XmlNode xmlLSCardinalSnapStart = m_Xdoc.CreateNode(XmlNodeType.Element, "LSCardinalSnapStart", null); xmlLSCardinalSnapStart.InnerText = lsModInfo[device].CardinalSnapStart.ToString(); rootElement.AppendChild(xmlLSCardinalSnapStart);
+                XmlNode xmlRSCardinalSnapStart = m_Xdoc.CreateNode(XmlNodeType.Element, "RSCardinalSnapStart", null); xmlRSCardinalSnapStart.InnerText = rsModInfo[device].CardinalSnapStart.ToString(); rootElement.AppendChild(xmlRSCardinalSnapStart);
                 XmlNode xmlLSMaxZone = m_Xdoc.CreateNode(XmlNodeType.Element, "LSMaxZone", null); xmlLSMaxZone.InnerText = lsModInfo[device].maxZone.ToString(); rootElement.AppendChild(xmlLSMaxZone);
                 XmlNode xmlRSMaxZone = m_Xdoc.CreateNode(XmlNodeType.Element, "RSMaxZone", null); xmlRSMaxZone.InnerText = rsModInfo[device].maxZone.ToString(); rootElement.AppendChild(xmlRSMaxZone);
                 XmlNode xmlLSVerticalScale = m_Xdoc.CreateNode(XmlNodeType.Element, "LSVerticalScale", null); xmlLSVerticalScale.InnerText = lsModInfo[device].verticalScale.ToString(); rootElement.AppendChild(xmlLSVerticalScale);
@@ -5627,6 +5639,18 @@ namespace DS4Windows
 
                 try
                 {
+                    Item = m_Xdoc.SelectSingleNode("/" + rootname + "/RSCardinalSnapWidth");
+                    int.TryParse(Item.InnerText, out int temp);
+                    temp = Math.Min(Math.Max(temp, 0), 127);
+                    rsModInfo[device].CardinalSnapWidth = temp;
+                }
+                catch
+                {
+                    rsModInfo[device].CardinalSnapWidth = 0; missingSetting = true;
+                }
+
+                try
+                {
                     Item = m_Xdoc.SelectSingleNode("/" + rootname + "/LSCardinalSnapStart");
                     int.TryParse(Item.InnerText, out int temp);
                     temp = Math.Min(Math.Max(temp, 0), 127);
@@ -5635,6 +5659,18 @@ namespace DS4Windows
                 catch
                 {
                     lsModInfo[device].CardinalSnapStart = 0; missingSetting = true;
+                }
+
+                try
+                {
+                    Item = m_Xdoc.SelectSingleNode("/" + rootname + "/RSCardinalSnapStart");
+                    int.TryParse(Item.InnerText, out int temp);
+                    temp = Math.Min(Math.Max(temp, 0), 127);
+                    rsModInfo[device].CardinalSnapStart = temp;
+                }
+                catch
+                {
+                    rsModInfo[device].CardinalSnapStart = 0; missingSetting = true;
                 }
 
                 try { Item = m_Xdoc.SelectSingleNode("/" + rootname + "/LSAntiDeadZone"); int.TryParse(Item.InnerText, out lsModInfo[device].antiDeadZone); }

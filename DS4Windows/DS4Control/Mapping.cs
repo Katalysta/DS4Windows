@@ -1417,8 +1417,8 @@ namespace DS4Windows
             if (rsMod.deadzoneType == StickDeadZoneInfo.DeadZoneType.Radial)
             {
                 int rsDeadzone = rsMod.deadZone;
-                double rsCardinalSnapWidth = (double)lsMod.CardinalSnapWidth;
-                double rsCardinalSnapStart = (double)lsMod.CardinalSnapStart;
+                double rsCardinalSnapWidth = (double)rsMod.CardinalSnapWidth;
+                double rsCardinalSnapStart = (double)rsMod.CardinalSnapStart;
                 int rsAntiDead = rsMod.antiDeadZone;
                 int rsMaxZone = rsMod.maxZone;
                 double rsMaxOutput = rsMod.maxOutput;

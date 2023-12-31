@@ -116,6 +116,10 @@ namespace DS4WinWPF.DS4Forms
 
             profileSettingsVM.LSDeadZoneChanged += UpdateReadingsLsDeadZone;
             profileSettingsVM.RSDeadZoneChanged += UpdateReadingsRsDeadZone;
+            profileSettingsVM.LSCardinalSnapWidthChanged += UpdateReadingsLsCardinalSnapWidth;
+            profileSettingsVM.RSCardinalSnapWidthChanged += UpdateReadingsRsCardinalSnapWidth;
+            profileSettingsVM.LSCardinalSnapStartChanged += UpdateReadingsLsCardinalSnapStart;
+            profileSettingsVM.RSCardinalSnapStartChanged += UpdateReadingsRsCardinalSnapStart;
             profileSettingsVM.L2DeadZoneChanged += UpdateReadingsL2DeadZone;
             profileSettingsVM.R2DeadZoneChanged += UpdateReadingsR2DeadZone;
             profileSettingsVM.SXDeadZoneChanged += UpdateReadingsSXDeadZone;
@@ -221,6 +225,26 @@ namespace DS4WinWPF.DS4Forms
         {
             conReadingsUserCon.LsDeadX = profileSettingsVM.LSDeadZone;
             conReadingsUserCon.LsDeadY = profileSettingsVM.LSDeadZone;
+        }
+
+        private void UpdateReadingsLsCardinalSnapWidth(object sender, EventArgs e)
+        {
+            conReadingsUserCon.LsCardinalSnapWidth = profileSettingsVM.LSCardinalSnapWidth;
+        }
+
+        private void UpdateReadingsRsCardinalSnapWidth(object sender, EventArgs e)
+        {
+            conReadingsUserCon.RsCardinalSnapWidth = profileSettingsVM.RSCardinalSnapWidth;
+        }
+
+        private void UpdateReadingsLsCardinalSnapStart(object sender, EventArgs e)
+        {
+            conReadingsUserCon.LsCardinalSnapStart = profileSettingsVM.LSCardinalSnapStart;
+        }
+
+        private void UpdateReadingsRsCardinalSnapStart(object sender, EventArgs e)
+        {
+            conReadingsUserCon.RsCardinalSnapStart = profileSettingsVM.RSCardinalSnapStart;
         }
 
         private void UpdateReadingsLsDeadZoneX(object sender, EventArgs e)
@@ -698,6 +722,8 @@ namespace DS4WinWPF.DS4Forms
             {
                 conReadingsUserCon.LsDeadX = profileSettingsVM.LSDeadZone;
                 conReadingsUserCon.LsDeadY = profileSettingsVM.LSDeadZone;
+                conReadingsUserCon.LsCardinalSnapWidth = profileSettingsVM.LSCardinalSnapWidth;
+                conReadingsUserCon.LsCardinalSnapStart = profileSettingsVM.LSCardinalSnapStart;
             }
             else if (lsMod.deadzoneType == StickDeadZoneInfo.DeadZoneType.Axial)
             {
@@ -710,6 +736,8 @@ namespace DS4WinWPF.DS4Forms
             {
                 conReadingsUserCon.RsDeadX = profileSettingsVM.RSDeadZone;
                 conReadingsUserCon.RsDeadY = profileSettingsVM.RSDeadZone;
+                conReadingsUserCon.RsCardinalSnapWidth = profileSettingsVM.RSCardinalSnapWidth;
+                conReadingsUserCon.RsCardinalSnapStart = profileSettingsVM.RSCardinalSnapStart;
             }
             else if (rsMod.deadzoneType == StickDeadZoneInfo.DeadZoneType.Axial)
             {
@@ -767,7 +795,11 @@ namespace DS4WinWPF.DS4Forms
             lightbarRect.DataContext = profileSettingsVM;
 
             conReadingsUserCon.LsDeadX = profileSettingsVM.LSDeadZone;
+            conReadingsUserCon.LsCardinalSnapWidth = profileSettingsVM.LSCardinalSnapWidth;
+            conReadingsUserCon.LsCardinalSnapStart = profileSettingsVM.LSCardinalSnapStart;
             conReadingsUserCon.RsDeadX = profileSettingsVM.RSDeadZone;
+            conReadingsUserCon.RsCardinalSnapWidth = profileSettingsVM.RSCardinalSnapWidth;
+            conReadingsUserCon.RsCardinalSnapStart = profileSettingsVM.RSCardinalSnapStart;
             conReadingsUserCon.L2Dead = profileSettingsVM.L2DeadZone;
             conReadingsUserCon.R2Dead = profileSettingsVM.R2DeadZone;
             conReadingsUserCon.SixAxisXDead = profileSettingsVM.SXDeadZone;

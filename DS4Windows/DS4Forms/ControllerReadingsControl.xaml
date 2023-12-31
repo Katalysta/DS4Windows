@@ -43,16 +43,16 @@
                     <Rectangle Width="130" Height="130" Stroke="{DynamicResource ForegroundColor}">
                     </Rectangle>
                     <Polygon x:Name="lsCardinalTriangleN" Fill="LightBlue"
-                             Points="{Binding NPoints, Converter={StaticResource PointCollectionConverter}}">
+                             Points="{Binding LSNPoints, Converter={StaticResource PointCollectionConverter}}">
                     </Polygon>
                     <Polygon x:Name="lsCardinalTriangleS" Fill="LightBlue"
-                             Points="{Binding SPoints, Converter={StaticResource PointCollectionConverter}}">
+                             Points="{Binding LSSPoints, Converter={StaticResource PointCollectionConverter}}">
                     </Polygon>
                     <Polygon x:Name="lsCardinalTriangleW" Fill="LightBlue"
-                             Points="{Binding WPoints, Converter={StaticResource PointCollectionConverter}}">
+                             Points="{Binding LSWPoints, Converter={StaticResource PointCollectionConverter}}">
                     </Polygon>
                     <Polygon x:Name="lsCardinalTriangleE" Fill="LightBlue"
-                             Points="{Binding EPoints, Converter={StaticResource PointCollectionConverter}}">
+                             Points="{Binding LSEPoints, Converter={StaticResource PointCollectionConverter}}">
                     </Polygon>
                     <Ellipse x:Name="lsDeadEllipse" Width="{Binding Path=Width, ElementName=lsCanvas}"
                              Height="{Binding Path=Height, ElementName=lsCanvas}" Fill="#FFCF1F1F">
@@ -90,6 +90,18 @@
                     <Rectangle Width="{Binding Path=Width, ElementName=rsCanvas}"
                                Height="{Binding Path=Height, ElementName=rsCanvas}" Stroke="{DynamicResource ForegroundColor}">
                     </Rectangle>
+                    <Polygon x:Name="rsCardinalTriangleN" Fill="LightBlue"
+                             Points="{Binding RSNPoints, Converter={StaticResource PointCollectionConverter}}">
+                    </Polygon>
+                    <Polygon x:Name="rsCardinalTriangleS" Fill="LightBlue"
+                             Points="{Binding RSSPoints, Converter={StaticResource PointCollectionConverter}}">
+                    </Polygon>
+                    <Polygon x:Name="rsCardinalTriangleW" Fill="LightBlue"
+                             Points="{Binding RSWPoints, Converter={StaticResource PointCollectionConverter}}">
+                    </Polygon>
+                    <Polygon x:Name="rsCardinalTriangleE" Fill="LightBlue"
+                             Points="{Binding RSEPoints, Converter={StaticResource PointCollectionConverter}}">
+                    </Polygon>
                     <Ellipse x:Name="rsDeadEllipse" Width="{Binding Path=Width, ElementName=rsCanvas}"
                              Height="{Binding Path=Height, ElementName=rsCanvas}" Fill="#FFCF1F1F">
                     </Ellipse>

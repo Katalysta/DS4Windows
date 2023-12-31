@@ -422,6 +422,38 @@ namespace DS4WinWPF.DS4Control.DTOXml
             set => _rSDeadZone = Math.Clamp(value, 0, 127);
         }
 
+        private int _lSCardinalSnapWidth = 0;
+        [XmlElement("LSCardinalSnapWidth")]
+        public int LSCardinalSnapWidth
+        {
+            get => _lSCardinalSnapWidth;
+            set => _lSCardinalSnapWidth = Math.Clamp(value, 0, 127);
+        }
+
+        private int _rSCardinalSnapWidth = 0;
+        [XmlElement("RSCardinalSnapWidth")]
+        public int RSCardinalSnapWidth
+        {
+            get => _rSCardinalSnapWidth;
+            set => _rSCardinalSnapWidth = Math.Clamp(value, 0, 127);
+        }
+
+        private int _lSCardinalSnapStart = 0;
+        [XmlElement("LSCardinalSnapStart")]
+        public int LSCardinalSnapStart
+        {
+            get => _lSCardinalSnapStart;
+            set => _lSCardinalSnapStart = Math.Clamp(value, 0, 127);
+        }
+
+        private int _rSCardinalSnapStart = 0;
+        [XmlElement("RSCardinalSnapStart")]
+        public int RSCardinalSnapStart
+        {
+            get => _rSCardinalSnapStart;
+            set => _rSCardinalSnapStart = Math.Clamp(value, 0, 127);
+        }
+
         private int _lSAntiDeadZone = StickDeadZoneInfo.DEFAULT_ANTIDEADZONE;
         [XmlElement("LSAntiDeadZone")]
         public int LSAntiDeadZone
@@ -1507,8 +1539,10 @@ namespace DS4WinWPF.DS4Control.DTOXml
             _maxSatRainbow = lightInfo.maxRainbowSat;
             LSDeadZone = source.lsModInfo[deviceIndex].deadZone;
             RSDeadZone = source.rsModInfo[deviceIndex].deadZone;
-            CardinalSnapWidth = source.lsModInfo[deviceIndex].CardinalSnapWidth;
-            CardinalSnapStart = source.lsModInfo[deviceIndex].CardinalSnapStart;
+            LSCardinalSnapWidth = source.lsModInfo[deviceIndex].CardinalSnapWidth;
+            RSCardinalSnapWidth = source.rsModInfo[deviceIndex].CardinalSnapWidth;
+            LSCardinalSnapStart = source.lsModInfo[deviceIndex].CardinalSnapStart;
+            RSCardinalSnapStart = source.rsModInfo[deviceIndex].CardinalSnapStart;
             LSAntiDeadZone = source.lsModInfo[deviceIndex].antiDeadZone;
             RSAntiDeadZone = source.rsModInfo[deviceIndex].antiDeadZone;
             LSMaxZone = source.lsModInfo[deviceIndex].maxZone;
@@ -2014,8 +2048,10 @@ namespace DS4WinWPF.DS4Control.DTOXml
             lightInfo.maxRainbowSat = _maxSatRainbow;
             destination.lsModInfo[deviceIndex].deadZone = LSDeadZone;
             destination.rsModInfo[deviceIndex].deadZone = RSDeadZone;
-            destination.lsModInfo[deviceIndex].CardinalSnapWidth = CardinalSnapWidth;
-            destination.lsModInfo[deviceIndex].CardinalSnapStart = CardinalSnapStart;
+            destination.lsModInfo[deviceIndex].CardinalSnapWidth = LSCardinalSnapWidth;
+            destination.rsModInfo[deviceIndex].CardinalSnapWidth = RSCardinalSnapWidth;
+            destination.lsModInfo[deviceIndex].CardinalSnapStart = LSCardinalSnapStart;
+            destination.rsModInfo[deviceIndex].CardinalSnapStart = RSCardinalSnapStart;
             destination.lsModInfo[deviceIndex].antiDeadZone = LSAntiDeadZone;
             destination.rsModInfo[deviceIndex].antiDeadZone = RSAntiDeadZone;
             destination.lsModInfo[deviceIndex].maxZone = LSMaxZone;
