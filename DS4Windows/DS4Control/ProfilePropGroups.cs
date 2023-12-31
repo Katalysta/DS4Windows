@@ -25,10 +25,20 @@ namespace DS4Windows
 {
     public class SquareStickInfo
     {
+        public const double DEFAULT_ROUNDNESS = 5.0;
+
         public bool lsMode;
         public bool rsMode;
-        public double lsRoundness = 5.0;
-        public double rsRoundness = 5.0;
+        public double lsRoundness = DEFAULT_ROUNDNESS;
+        public double rsRoundness = DEFAULT_ROUNDNESS;
+
+        public void Reset()
+        {
+            lsMode = false;
+            rsMode = false;
+            lsRoundness = DEFAULT_ROUNDNESS;
+            rsRoundness = DEFAULT_ROUNDNESS;
+        }
     }
 
     public class StickDeadZoneInfo
@@ -128,6 +138,9 @@ namespace DS4Windows
 
     public class TriggerDeadZoneZInfo
     {
+        public const int DEFAULT_MAX_ZONE = 100;
+        public const double DEFAULT_MAX_OUTPUT = 100.0;
+
         // Trigger deadzone is expressed in axis units (bad old convention)
         public byte deadZone;
 
@@ -172,7 +185,7 @@ namespace DS4Windows
         public event EventHandler CardinalSnapStartChanged;
 
         public int antiDeadZone;
-        public int maxZone = 100;
+        public int maxZone = DEFAULT_MAX_ZONE;
         public int MaxZone
         {
             get => maxZone;
@@ -185,7 +198,7 @@ namespace DS4Windows
         }
         public event EventHandler MaxZoneChanged;
 
-        public double maxOutput = 100.0;
+        public double maxOutput = DEFAULT_MAX_OUTPUT;
 
         public double MaxOutput
         {
@@ -203,8 +216,8 @@ namespace DS4Windows
         {
             deadZone = 0;
             antiDeadZone = 0;
-            MaxZone = 100;
-            MaxOutput = 100.0;
+            MaxZone = DEFAULT_MAX_ZONE;
+            MaxOutput = DEFAULT_MAX_OUTPUT;
         }
 
         public void ResetEvents()
@@ -389,16 +402,22 @@ namespace DS4Windows
         public const OutputStickAxes DEFAULT_OUTPUT_STICK_AXES = OutputStickAxes.XY;
         public const double SMOOTHING_WEIGHT_DEFAULT = 0.5;
         public const bool JITTER_COMPENSATION_DEFAULT = false;
+        public const int DEFAULT_DEADZONE = 30;
+        public const int DEFAULT_MAXZONE = 830;
+        public const double DEFAULT_ANTI_DEAD = 0.4;
+        public const double DEFAULT_MAX_OUTPUT = 100.0;
+        public const int DEFAULT_VERTICAL_SCALE = 100;
+        public const uint DEFAULT_INVERTED = 0;
 
-        public int deadZone;
-        public int maxZone;
-        public double antiDeadX;
-        public double antiDeadY;
-        public int vertScale;
+        public int deadZone = DEFAULT_DEADZONE;
+        public int maxZone = DEFAULT_MAXZONE;
+        public double antiDeadX = DEFAULT_ANTI_DEAD;
+        public double antiDeadY = DEFAULT_ANTI_DEAD;
+        public int vertScale = DEFAULT_VERTICAL_SCALE;
         public bool maxOutputEnabled;
-        public double maxOutput = 100.0;
+        public double maxOutput = DEFAULT_MAX_OUTPUT;
         // Flags representing invert axis choices
-        public uint inverted;
+        public uint inverted = DEFAULT_INVERTED;
         public bool useSmoothing;
         public double smoothWeight = SMOOTHING_WEIGHT_DEFAULT;
         public SmoothingMethod smoothingMethod;
@@ -448,10 +467,10 @@ namespace DS4Windows
 
         public void Reset()
         {
-            deadZone = 30; maxZone = 830;
-            antiDeadX = 0.4; antiDeadY = 0.4;
-            inverted = 0; vertScale = 100;
-            maxOutputEnabled = false; maxOutput = 100.0;
+            deadZone = DEFAULT_DEADZONE; maxZone = DEFAULT_MAXZONE;
+            antiDeadX = DEFAULT_ANTI_DEAD; antiDeadY = DEFAULT_ANTI_DEAD;
+            inverted = DEFAULT_INVERTED; vertScale = DEFAULT_VERTICAL_SCALE;
+            maxOutputEnabled = false; maxOutput = DEFAULT_MAX_OUTPUT;
             outputStick = DEFAULT_OUTPUT_STICK;
             outputStickDir = DEFAULT_OUTPUT_STICK_AXES;
 
@@ -607,6 +626,7 @@ namespace DS4Windows
 
     public class ButtonMouseInfo
     {
+        // 1.0 = 100%
         //public const double MOUSESTICKANTIOFFSET = 0.0128;
         public const double MOUSESTICKANTIOFFSET = 0.008;
         public const int DEFAULT_BUTTON_SENS = 25;
@@ -700,6 +720,9 @@ namespace DS4Windows
 
     public class LightbarDS4WinInfo
     {
+        public const double DEFAULT_MAX_RAINBOW_SAT = 1.0;
+        public static DS4Color DEFAULT_CUSTOM_LED = new DS4Color(0, 0, 255);
+
         public bool useCustomLed;
         public bool ledAsBattery;
         public DS4Color m_CustomLed = new DS4Color(0, 0, 255);
@@ -708,7 +731,7 @@ namespace DS4Windows
         public DS4Color m_ChargingLed;
         public DS4Color m_FlashLed;
         public double rainbow;
-        public double maxRainbowSat = 1.0;
+        public double maxRainbowSat = DEFAULT_MAX_RAINBOW_SAT;
         public int flashAt; // Battery % when flashing occurs. <0 means disabled
         public byte flashType;
         public int chargingType;
@@ -716,7 +739,9 @@ namespace DS4Windows
 
     public class LightbarSettingInfo
     {
-        public LightbarMode mode = LightbarMode.DS4Win;
+        public const LightbarMode DEFAULT_MODE = LightbarMode.DS4Win;
+
+        public LightbarMode mode = DEFAULT_MODE;
         public LightbarDS4WinInfo ds4winSettings = new LightbarDS4WinInfo();
         public LightbarMode Mode
         {
@@ -881,6 +906,7 @@ namespace DS4Windows
         //public const string DEFAULT_SMOOTH_TECHNIQUE = "one-euro";
         public const OutputStick DEFAULT_OUTPUT_STICK = OutputStick.RightStick;
         public const OutputStickAxes DEFAULT_OUTPUT_STICK_AXES = OutputStickAxes.XY;
+        public const int DEFAULT_DEADZONE = 0;
         public const int MAX_ZONE_DEFAULT = 8;
         public const double ANTI_DEADZONE_DEFAULT = 0.40;
         public const bool TRACKBALL_MODE_DEFAULT = true;
@@ -889,16 +915,20 @@ namespace DS4Windows
         public const StickOutCurve.Curve OUTPUT_CURVE_DEFAULT = StickOutCurve.Curve.Linear;
         public const double ANG_DEGREE_DEFAULT = 0.0;
         public const double ANG_RAD_DEFAULT = ANG_DEGREE_DEFAULT * Math.PI / 180.0;
+        public const int DEFAULT_VERT_SCALE = 100;
+        public const double DEFAULT_MAX_OUTPUT = 100.0;
+        public const uint DEFAULT_INVERTED = 0;
+        public const bool DEFAULT_MAX_OUTPUT_ENABLED = false;
 
-        public int deadZone;
+        public int deadZone = DEFAULT_DEADZONE;
         public int maxZone = MAX_ZONE_DEFAULT;
         public double antiDeadX = ANTI_DEADZONE_DEFAULT;
         public double antiDeadY = ANTI_DEADZONE_DEFAULT;
-        public int vertScale;
-        public bool maxOutputEnabled;
-        public double maxOutput = 100.0;
+        public int vertScale = DEFAULT_VERT_SCALE;
+        public bool maxOutputEnabled = DEFAULT_MAX_OUTPUT_ENABLED;
+        public double maxOutput = DEFAULT_MAX_OUTPUT;
         // Flags representing invert axis choices
-        public uint inverted;
+        public uint inverted = DEFAULT_INVERTED;
         //public bool useSmoothing;
         public SmoothingMethod smoothingMethod;
         public double minCutoff = DEFAULT_MINCUTOFF;
@@ -956,10 +986,10 @@ namespace DS4Windows
 
         public void Reset()
         {
-            deadZone = 0; maxZone = MAX_ZONE_DEFAULT;
+            deadZone = DEFAULT_DEADZONE; maxZone = MAX_ZONE_DEFAULT;
             antiDeadX = ANTI_DEADZONE_DEFAULT; antiDeadY = ANTI_DEADZONE_DEFAULT;
-            inverted = 0; vertScale = 100;
-            maxOutputEnabled = false; maxOutput = 100.0;
+            inverted = DEFAULT_INVERTED; vertScale = DEFAULT_VERT_SCALE;
+            maxOutputEnabled = DEFAULT_MAX_OUTPUT_ENABLED; maxOutput = DEFAULT_MAX_OUTPUT;
             outputStick = DEFAULT_OUTPUT_STICK;
             outputStickDir = DEFAULT_OUTPUT_STICK_AXES;
             trackballMode = TRACKBALL_MODE_DEFAULT;
@@ -1178,9 +1208,9 @@ namespace DS4Windows
 
     public class TriggerOutputSettings
     {
-        private const TwoStageTriggerMode DEFAULT_TRIG_MODE = TwoStageTriggerMode.Disabled;
-        private const int DEFAULT_HIP_TIME = 100;
-        private const InputDevices.TriggerEffects DEFAULT_TRIGGER_EFFECT = InputDevices.TriggerEffects.None;
+        public const TwoStageTriggerMode DEFAULT_TRIG_MODE = TwoStageTriggerMode.Disabled;
+        public const int DEFAULT_HIP_TIME = 100;
+        public const InputDevices.TriggerEffects DEFAULT_TRIGGER_EFFECT = InputDevices.TriggerEffects.None;
 
         //public TriggerMode mode = TriggerMode.Normal;
         public TwoStageTriggerMode twoStageMode = DEFAULT_TRIG_MODE;
