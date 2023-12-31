@@ -10,6 +10,9 @@
              xmlns:local="clr-namespace:DS4WinWPF.DS4Forms"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="460">
+    <UserControl.Resources>
+        <local:PointCollectionConverter x:Key="PointCollectionConverter" />
+    </UserControl.Resources>
     <DockPanel LastChildFill="False">
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <StackPanel Orientation="Horizontal" Width="200">
@@ -39,6 +42,18 @@
                 <Canvas x:Name="lsCanvas" Width="130" Height="130" ClipToBounds="True">
                     <Rectangle Width="130" Height="130" Stroke="{DynamicResource ForegroundColor}">
                     </Rectangle>
+                    <Polygon x:Name="lsCardinalTriangleN" Fill="LightBlue"
+                             Points="{Binding NPoints, Converter={StaticResource PointCollectionConverter}}">
+                    </Polygon>
+                    <Polygon x:Name="lsCardinalTriangleS" Fill="LightBlue"
+                             Points="{Binding SPoints, Converter={StaticResource PointCollectionConverter}}">
+                    </Polygon>
+                    <Polygon x:Name="lsCardinalTriangleW" Fill="LightBlue"
+                             Points="{Binding WPoints, Converter={StaticResource PointCollectionConverter}}">
+                    </Polygon>
+                    <Polygon x:Name="lsCardinalTriangleE" Fill="LightBlue"
+                             Points="{Binding EPoints, Converter={StaticResource PointCollectionConverter}}">
+                    </Polygon>
                     <Ellipse x:Name="lsDeadEllipse" Width="{Binding Path=Width, ElementName=lsCanvas}"
                              Height="{Binding Path=Height, ElementName=lsCanvas}" Fill="#FFCF1F1F">
                     </Ellipse>

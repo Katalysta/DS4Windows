@@ -18,6 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,6 +56,8 @@ namespace DS4WinWPF.DS4Forms
         private bool useTimer;
         private double lsDeadX;
         private double lsDeadY;
+        private double lsCardinalSnapWidth;
+        private double lsCardinalSnapStart;
         private double rsDeadX;
         private double rsDeadY;
 
@@ -61,6 +65,11 @@ namespace DS4WinWPF.DS4Forms
         private double sixAxisZDead;
         private double l2Dead;
         private double r2Dead;
+
+        private ObservableCollection<Point> Npoints = new ObservableCollection<Point>();
+        private ObservableCollection<Point> Spoints = new ObservableCollection<Point>();
+        private ObservableCollection<Point> Wpoints = new ObservableCollection<Point>();
+        private ObservableCollection<Point> Epoints = new ObservableCollection<Point>();
 
         public double LsDeadX
         {
@@ -83,6 +92,47 @@ namespace DS4WinWPF.DS4Forms
             }
         }
         public event EventHandler LsDeadYChanged;
+
+        public ObservableCollection<Point> NPoints
+        { 
+            get { return Npoints; } 
+        }
+        public ObservableCollection<Point> SPoints
+        {
+            get { return Spoints; }
+        }
+        public ObservableCollection<Point> WPoints
+        {
+            get { return Wpoints; }
+        }
+        public ObservableCollection<Point> EPoints
+        {
+            get { return Epoints; }
+        }
+
+        public double LsCardinalSnapWidth
+        {
+            get => lsCardinalSnapWidth;
+            set
+            {
+                lsCardinalSnapWidth = value;
+                LsCardinalSnapWidthChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler LsCardinalSnapWidthChanged;
+
+        public double LsCardinalSnapStart
+        {
+            get => lsCardinalSnapStart;
+            set
+            {
+                lsCardinalSnapStart = value;
+                LsCardinalSnapStartChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler LsCardinalSnapStartChanged;
 
         public double RsDeadX
         {
@@ -171,6 +221,9 @@ namespace DS4WinWPF.DS4Forms
             LsDeadXChanged += ChangeLsDeadControls;
             LsDeadYChanged += ChangeLsDeadControls;
 
+            LsCardinalSnapWidthChanged += ChangeLsCardinalControls;
+            LsCardinalSnapStartChanged += ChangeLsCardinalControls;
+
             RsDeadXChanged += ChangeRsDeadControls;
             RsDeadYChanged += ChangeRsDeadControls;
 
@@ -206,6 +259,47 @@ namespace DS4WinWPF.DS4Forms
             lsDeadEllipse.Height = lsDeadY * CANVAS_WIDTH;
             Canvas.SetLeft(lsDeadEllipse, CANVAS_MIDPOINT - (lsDeadX * CANVAS_WIDTH / 2.0));
             Canvas.SetTop(lsDeadEllipse, CANVAS_MIDPOINT - (lsDeadY * CANVAS_WIDTH / 2.0));
+        }
+
+        private void ChangeLsCardinalControls(object sender, EventArgs e)
+        {
+            Random rnd = new Random();
+            Point Point1 = new Point(CANVAS_MIDPOINT, CANVAS_MIDPOINT - (lsCardinalSnapStart * CANVAS_WIDTH / 2.0));
+            Point Point2 = new Point(CANVAS_MIDPOINT - (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT - (CANVAS_WIDTH / 2.0));
+            Point Point3 = new Point(CANVAS_MIDPOINT + (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT - (CANVAS_WIDTH / 2.0));
+            NPoints.Clear();
+            NPoints.Add(Point1);
+            NPoints.Add(Point2);
+            NPoints.Add(Point3);
+            DataContext = null;
+            DataContext = this;
+            Point1 = new Point(CANVAS_MIDPOINT, CANVAS_MIDPOINT + (lsCardinalSnapStart * CANVAS_WIDTH / 2.0));
+            Point2 = new Point(CANVAS_MIDPOINT - (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT + (CANVAS_WIDTH / 2.0));
+            Point3 = new Point(CANVAS_MIDPOINT + (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT + (CANVAS_WIDTH / 2.0));
+            SPoints.Clear();
+            SPoints.Add(Point1);
+            SPoints.Add(Point2);
+            SPoints.Add(Point3);
+            DataContext = null;
+            DataContext = this;
+            Point1 = new Point(CANVAS_MIDPOINT - (lsCardinalSnapStart * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT);
+            Point2 = new Point(CANVAS_MIDPOINT - (CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT - (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0));
+            Point3 = new Point(CANVAS_MIDPOINT - (CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT + (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0));
+            WPoints.Clear();
+            WPoints.Add(Point1);
+            WPoints.Add(Point2);
+            WPoints.Add(Point3);
+            DataContext = null;
+            DataContext = this;
+            Point1 = new Point(CANVAS_MIDPOINT + (lsCardinalSnapStart * CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT);
+            Point2 = new Point(CANVAS_MIDPOINT + (CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT - (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0));
+            Point3 = new Point(CANVAS_MIDPOINT + (CANVAS_WIDTH / 2.0), CANVAS_MIDPOINT + (lsCardinalSnapWidth * CANVAS_WIDTH / 2.0));
+            EPoints.Clear();
+            EPoints.Add(Point1);
+            EPoints.Add(Point2);
+            EPoints.Add(Point3);
+            DataContext = null;
+            DataContext = this;
         }
 
         public void UseDevice(int index, int profileDevIdx)
@@ -389,6 +483,26 @@ namespace DS4WinWPF.DS4Forms
             l2OutValLb.Content = mapState.L2;
             r2InValLb.Content = inState.R2;
             r2OutValLb.Content = mapState.R2;
+        }
+    }
+    public class PointCollectionConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value.GetType() == typeof(ObservableCollection<Point>) && targetType == typeof(PointCollection))
+            {
+                var pointCollection = new PointCollection();
+                foreach (var point in value as ObservableCollection<Point>)
+                    pointCollection.Add(point);
+                return pointCollection;
+            }
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
         }
     }
 }
